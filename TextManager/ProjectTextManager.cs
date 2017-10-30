@@ -15,7 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace AerialCamouflage
+namespace TextManager
 {
     public partial class ProjectTextManager : Form
     {
@@ -194,7 +194,7 @@ namespace AerialCamouflage
         {
             StringBuilder sb = new StringBuilder();
 
-            string con = @"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + excelFile + ";" +
+            string con = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + excelFile + ";" +
                           @"Extended Properties='Excel 8.0;IMEX=1;HDR=No;ImportMixedTypes=Text;'";
             using (OleDbConnection connection = new OleDbConnection(con))
             {
@@ -317,7 +317,7 @@ namespace AerialCamouflage
         {
             StringBuilder sb = new StringBuilder();
 
-            string con = @"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + excelFile + ";" +
+            string con = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + excelFile + ";" +
                           @"Extended Properties='Excel 8.0;IMEX=1;HDR=No;ImportMixedTypes=Text;'";
             using (OleDbConnection connection = new OleDbConnection(con))
             {
@@ -349,7 +349,7 @@ namespace AerialCamouflage
         {
             StringBuilder sb = new StringBuilder();
 
-            string con = @"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + excelFile + ";" +
+            string con = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + excelFile + ";" +
                           @"Extended Properties='Excel 8.0;IMEX=1;HDR=No;ImportMixedTypes=Text;'";
 
             using (OleDbConnection connection = new OleDbConnection(con))
@@ -389,7 +389,7 @@ namespace AerialCamouflage
         {
             StringBuilder sb = new StringBuilder();
 
-            string con = @"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + excelFile + ";" +
+            string con = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + excelFile + ";" +
                           @"Extended Properties='Excel 8.0;IMEX=1;HDR=No;ImportMixedTypes=Text;'";
 
             using (OleDbConnection connection = new OleDbConnection(con))
@@ -425,7 +425,7 @@ namespace AerialCamouflage
         {
             StringBuilder sb = new StringBuilder();
 
-            string con = @"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + excelFile + ";" +
+            string con = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + excelFile + ";" +
                           @"Extended Properties='Excel 8.0;IMEX=1;HDR=No;ImportMixedTypes=Text;'";
 
             using (OleDbConnection connection = new OleDbConnection(con))
@@ -491,7 +491,7 @@ namespace AerialCamouflage
             string[] area = new string[] { "A", "B", "C", "D", "E", "F" };
 
 
-            string con = @"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + excelFile + ";" +
+            string con = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + excelFile + ";" +
                           @"Extended Properties='Excel 8.0;IMEX=1;HDR=No;ImportMixedTypes=Text;'";
             using (OleDbConnection connection = new OleDbConnection(con))
             {
@@ -641,7 +641,7 @@ namespace AerialCamouflage
             }
 
             txtContent.Text = sb.ToString();
-            string outputFolder = fd.SelectedPath + "\\ODMSave.txt";
+            string outputFolder = fd.SelectedPath + "\\___ODMSave.txt";
             StreamWriter sw = new StreamWriter(outputFolder);
             sw.Write(sb.ToString());
             sw.Close();
@@ -653,7 +653,7 @@ namespace AerialCamouflage
         {
             StringBuilder sb = new StringBuilder();
 
-            string con = @"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + excelFile + ";" +
+            string con = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + excelFile + ";" +
                           @"Extended Properties='Excel 8.0;IMEX=1;HDR=No;ImportMixedTypes=Text;'";
 
             using (OleDbConnection connection = new OleDbConnection(con))
@@ -718,6 +718,7 @@ namespace AerialCamouflage
 
         private void readJson(string lang)
         {
+            //Might need to fix this if ODM Art change the path of Map.json
             string path = fd.SelectedPath + "\\" + lang + "\\" + "MapDatabase.txt";
             StreamReader sr = new StreamReader(path, Encoding.UTF8);
             JsonTextReader reader = new JsonTextReader(sr);

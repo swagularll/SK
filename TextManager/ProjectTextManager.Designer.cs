@@ -1,4 +1,4 @@
-﻿namespace AerialCamouflage
+﻿namespace TextManager
 {
     partial class ProjectTextManager
     {
