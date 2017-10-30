@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ProjectTextManager;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -486,167 +487,132 @@ namespace TextManager
         private void btnSave_Click(object sender, EventArgs e)
         {
             generateUI();
-            StringBuilder sb = new StringBuilder();
+
+            string boxMsg = "File Generated!" + Environment.NewLine;
+            ODMDictionary dic = new ODMDictionary();
+
             //Default Area
-            string[] area = new string[] { "A", "B", "C", "D", "E", "F" };
+            string[] areaCode = new string[] { "A", "B", "C", "D", "E", "F" };
+            List<string> areaNameCollection = new List<string>();
+            for (int i = 0; i < areaCode.Length; i++)
+            {
+                for (int k = 0; k < 10; k++)
+                {
+                    areaNameCollection.Add(areaCode[i] + k);
+                }
+            }
 
 
             string con = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + excelFile + ";" +
                           @"Extended Properties='Excel 8.0;IMEX=1;HDR=No;ImportMixedTypes=Text;'";
             using (OleDbConnection connection = new OleDbConnection(con))
             {
-                sb.Append("--------------------------" + Environment.NewLine);
-                sb.Append("Conversation" + Environment.NewLine);
-                sb.Append("--------------------------" + Environment.NewLine);
-
                 connection.Open();
+
+                //Conversation
                 OleDbCommand command_Conversation = new OleDbCommand("select * from [對話$]", connection);
                 using (OleDbDataReader dr = command_Conversation.ExecuteReader())
                 {
                     while (dr.Read())
                     {
-
-                        if (!String.IsNullOrEmpty(dr[0].ToString()))
-                        {
-                            string data = "[" + dr[0].ToString() + "]" + "False" + Environment.NewLine;
-                            sb.Append(data);
-                        }
+                        string value = dr[0].ToString();
+                        if (!String.IsNullOrEmpty(value))
+                            if (!dic.peek(value))
+                                dic.add(value, false.ToString());
+                            else
+                                boxMsg += "Key " + value + " is duplicated!" + Environment.NewLine;
                     }
                 }
 
-                sb.Append("--------------------------" + Environment.NewLine);
-                sb.Append("Door" + Environment.NewLine);
-                sb.Append("--------------------------" + Environment.NewLine);
-
+                //Doors
                 OleDbCommand command_Door = new OleDbCommand("select * from [門鎖旗標$]", connection);
                 using (OleDbDataReader dr = command_Door.ExecuteReader())
                 {
                     while (dr.Read())
                     {
-                        if (!String.IsNullOrEmpty(dr[0].ToString()))
-                        {
-                            string data = "[" + dr[0].ToString() + "]" + "False" + Environment.NewLine;
-                            sb.Append(data);
-                        }
+                        string value = dr[0].ToString();
+                        if (!String.IsNullOrEmpty(value))
+                            if (!dic.peek(value))
+                                dic.add(value, false.ToString());
+                            else
+                                boxMsg += "Key " + value + " is duplicated!" + Environment.NewLine;
                     }
                 }
 
-                sb.Append("--------------------------" + Environment.NewLine);
-                sb.Append("Document" + Environment.NewLine);
-                sb.Append("--------------------------" + Environment.NewLine);
-                int defaultCountrol = 0;
-
+                //Document
                 OleDbCommand command_Document = new OleDbCommand("select * from [文件系統$]", connection);
                 using (OleDbDataReader dr = command_Document.ExecuteReader())
                 {
                     while (dr.Read())
                     {
-                        if (!String.IsNullOrEmpty(dr[0].ToString()))
-                        {
-                            string data = "";
-                            if (ckBox.Checked && defaultCountrol < 1)
-                            {
-                                defaultCountrol++;
-                                data = "[" + dr[0].ToString() + "]" + "True" + Environment.NewLine;
-                            }
+                        string value = dr[0].ToString();
+                        if (!String.IsNullOrEmpty(value))
+                            if (!dic.peek(value))
+                                dic.add(value, false.ToString());
                             else
-                            {
-                                data = "[" + dr[0].ToString() + "]" + "False" + Environment.NewLine;
-                            }
-                            sb.Append(data);
-                        }
+                                boxMsg += "Key " + value + " is duplicated!" + Environment.NewLine;
                     }
                 }
 
 
 
-                sb.Append("--------------------------" + Environment.NewLine);
-                sb.Append("Intelligence" + Environment.NewLine);
-                sb.Append("--------------------------" + Environment.NewLine);
-                defaultCountrol = 0;
+                //Intelligence
                 OleDbCommand command_Intelligence = new OleDbCommand("select * from [情報系統$]", connection);
                 using (OleDbDataReader dr = command_Intelligence.ExecuteReader())
                 {
                     while (dr.Read())
                     {
-                        if (!String.IsNullOrEmpty(dr[0].ToString()))
-                        {
-                            string data = "";
-                            if (ckBox.Checked && defaultCountrol < 1)
-                            {
-                                defaultCountrol++;
-                                data = "[" + dr[0].ToString() + "]" + "True" + Environment.NewLine;
-                            }
+                        string value = dr[0].ToString();
+                        if (!String.IsNullOrEmpty(value))
+                            if (!dic.peek(value))
+                                dic.add(value, false.ToString());
                             else
-                            {
-                                data = "[" + dr[0].ToString() + "]" + "False" + Environment.NewLine;
-                            }
-                            sb.Append(data);
-                        }
+                                boxMsg += "Key " + value + " is duplicated!" + Environment.NewLine;
                     }
                 }
 
-                sb.Append("--------------------------" + Environment.NewLine);
-                sb.Append("Area Explored" + Environment.NewLine);
-                sb.Append("--------------------------" + Environment.NewLine);
-                for (int i = 0; i < area.Length; i++)
+                //Area Explored
+                for (int i = 0; i < areaNameCollection.Count; i++)
                 {
-                    for (int k = 0; k < 10; k++)
-                    {
-                        sb.Append("[" + "Area" + area[i] + k + "]" + "False" + Environment.NewLine);
-                    }
+                    dic.add("Area " + areaNameCollection[i], false.ToString());
                 }
 
-                sb.Append("--------------------------" + Environment.NewLine);
-                sb.Append("Warmbug Control Center" + Environment.NewLine);
-                sb.Append("--------------------------" + Environment.NewLine);
-                for (int i = 0; i < area.Length; i++)
+                //Warmbug Control Center
+                for (int i = 0; i < areaNameCollection.Count; i++)
                 {
-                    for (int k = 0; k < 10; k++)
-                    {
-                        sb.Append("[" + area[i] + k + " Warmbug]" + "False" + Environment.NewLine);
-                    }
+                    dic.add(areaNameCollection[i] + " Warmbug", false.ToString());
                 }
 
-                sb.Append("--------------------------" + Environment.NewLine);
-                sb.Append("Warmbug Control Reset" + Environment.NewLine);
-                sb.Append("--------------------------" + Environment.NewLine);
-                for (int i = 0; i < area.Length; i++)
+
+                //Warmbug Control Reset
+                for (int i = 0; i < areaNameCollection.Count; i++)
                 {
-                    for (int k = 0; k < 10; k++)
-                    {
-                        sb.Append("[" + area[i] + k + " Warmbug Reset]" + "False" + Environment.NewLine);
-                    }
+                    dic.add(areaNameCollection[i] + " Warmbug Reset", false.ToString());
                 }
 
-                sb.Append("--------------------------" + Environment.NewLine);
-                sb.Append("Door locked" + Environment.NewLine);
-                sb.Append("--------------------------" + Environment.NewLine);
-
-                readJson("EN");
+                //Door locked
+                readJson("EN");//Using English version as base
                 for (int i = 0; i < listJson.Count; i++)
                 {
                     if (listJson[i]["Right Door"] != null)
                     {
-                        string data_rightDoor = "[" + listJson[i]["name"] + " Right Door" + "]" + (string)listJson[i]["Right Door"]["DefaultOpen"];
-                        sb.Append(data_rightDoor + Environment.NewLine);
+                        dic.add(listJson[i]["name"] + " Right Door", (string)listJson[i]["Right Door"]["DefaultOpen"]);
                     }
 
                     if (listJson[i]["Down Door"] != null)
                     {
-                        string data_rightDoor = "[" + listJson[i]["name"] + " Down Door" + "]" + (string)listJson[i]["Down Door"]["DefaultOpen"];
-                        sb.Append(data_rightDoor + Environment.NewLine);
+                        dic.add("[" + listJson[i]["name"] + " Down Door", (string)listJson[i]["Down Door"]["DefaultOpen"]);
                     }
                 }
             }
 
-            txtContent.Text = sb.ToString();
-            string outputFolder = fd.SelectedPath + "\\___ODMSave.txt";
+            txtContent.Text = dic.getJsonString();
+            string outputFolder = fd.SelectedPath + "\\PPODMSave.json";
             StreamWriter sw = new StreamWriter(outputFolder);
-            sw.Write(sb.ToString());
+            sw.Write(dic.getJsonString());
             sw.Close();
 
-            MessageBox.Show("File Generated!", "Message");
+            MessageBox.Show(boxMsg, "Message");
         }
 
         private void generateUI()
